@@ -1,0 +1,57 @@
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+      - prod
+    paths:
+      - 'L3.json'
+      
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy L3 Configuration
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}      
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Execute L3 Deployment Script
+        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}"
+
+      - name: Install Pytest
+        run: pip install pytest
+
+      - name: Run Unit Tests
+        id: unit_tests
+        continue-on-error: true
+        run: pytest ./tests
+
+      - name: Configure Git
+        if: steps.unit_tests.outcome == 'failure'
+        run: |
+          git config --global user.email "github.actions@ulpia.tech"
+          git config --global user.name "Ulpia Tech Actions"
+
+      - name: Revert Commit on Failure
+        if: steps.unit_tests.outcome == 'failure'
+        run: |
+          git checkout ${{ github.sha }}~1 L3.json
+          git add .
+          git commit -m "Revert ${{ github.sha}} by Rollback Bot"
+          git push
+        
+      - name: Re-run Deployment on Failure
+        if: steps.unit_tests.outcome == 'failure'
+        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}"
+      
+    

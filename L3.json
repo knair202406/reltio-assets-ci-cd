@@ -5,7 +5,7 @@
     "sources": [
         {
             "uri": "configuration/sources/Salesforce",
-            "label": "Salesforce",
+            "label": "Salesforce1",
             "abbreviation": "Salesforce"
         },
         {
