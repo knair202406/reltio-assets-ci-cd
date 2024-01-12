@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Execute L3 Deployment Script
-        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}"
+        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}" "${{ secrets.RDM_TENANT_ID }}"
 
       - name: Install Pytest
         run: pip install pytest
@@ -52,6 +52,6 @@ jobs:
         
       - name: Re-run Deployment on Failure
         if: steps.unit_tests.outcome == 'failure'
-        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}"
+        run: python scripts/l3-deployment.py "L3.json" "${{ secrets.RELTIO_USERNAME }}" "${{ secrets.RELTIO_PASSWORD }}" "${{ secrets.RELTIO_ENVIRONMENT }}" "${{ secrets.RELTIO_TENANT_ID }}" "${{ secrets.RDM_TENANT_ID }}"
       
     

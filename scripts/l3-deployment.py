@@ -21,7 +21,7 @@ def update_config(url, data, access_token):
     return response
 
 def main():
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         sys.exit(1)
 
     l3_path = sys.argv[1]
@@ -29,12 +29,14 @@ def main():
     password = sys.argv[3]
     reltio_environment = sys.argv[4]
     reltio_tenant_id = sys.argv[5]
+    rdm_tenant_id = sys.argv[6]
 
     url = 'https://' + reltio_environment + '.reltio.com/reltio/api/' + reltio_tenant_id + '/configuration'
 
     access_token = get_access_token(username, password)
     
     l3_config = read_file(l3_path)
+    l3_config = l3_config.replace('{RDM_TENANT_ID}', rdm_tenant_id)
 
     response = update_config(url, l3_config, access_token)
 
