@@ -2,10 +2,10 @@ import sys
 import requests
 
 def read_file(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
 
-def get_access_token(username, password, url = "https://auth.reltio.com/oauth/token"):
+def get_access_token(username, password, url="https://auth.reltio.com/oauth/token"):
     headers = {'Authorization': 'Basic cmVsdGlvX3VpOm1ha2l0YQ=='}
     payload = {'grant_type': 'password', 'username': username, 'password': password}
     response = requests.post(url, data=payload, headers=headers)
@@ -17,7 +17,9 @@ def get_access_token(username, password, url = "https://auth.reltio.com/oauth/to
 
 def update_config(url, data, access_token):
     headers = {'Authorization': f'Bearer {access_token}'}
-    response = requests.put(url, data=data, headers=headers)
+    # Encode the data in UTF-8
+    encoded_data = data.encode('utf-8')
+    response = requests.put(url, data=encoded_data, headers=headers)
     return response
 
 def main():
