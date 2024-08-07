@@ -39,8 +39,8 @@ jobs:
       - name: Configure Git
         if: steps.unit_tests.outcome == 'failure'
         run: |
-          git config --global user.email "github.actions@ulpia.tech"
-          git config --global user.name "Ulpia Tech Actions"
+          git config --global user.email "knair@alin.com"
+          git config --global user.name "knair"
 
       - name: Revert Commit on Failure
         if: steps.unit_tests.outcome == 'failure'
